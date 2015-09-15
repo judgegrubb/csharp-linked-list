@@ -47,36 +47,12 @@ namespace LinkedList
         }
 
         private Node<T> Head;
-        private Node<T> Tail;
         private int Count;
 
         public LinkedList()
         {
             Head = null;
-            Tail = null;
             Count = 0;
-        }
-
-        public void AddLast(T data)
-        {
-            if (Count == 0)
-            {
-                Head = new Node<T>(data);
-                Tail = Head;
-            }
-            else
-            {
-                Node<T> Temp = new Node<T>(data);
-                Tail.setChild(Temp);
-                Tail = Temp;
-            }
-
-            Count++;
-        }
-
-        public T GetLast()
-        {
-            return Tail.getData();
         }
 
         public void AddFirst(T data)
@@ -84,7 +60,6 @@ namespace LinkedList
             if (Count == 0)
             {
                 Head = new Node<T>(data);
-                Tail = Head;
             }
             else
             {
@@ -105,15 +80,6 @@ namespace LinkedList
         {
             T returnData = Head.getData();
             Head = Head.getChild();
-            Count--;
-            return returnData;
-        }
-
-        public T PopLast()
-        {
-            T returnData = Tail.getData();
-            Tail = FindSecondToLast();
-            Tail.setChild(null);
             Count--;
             return returnData;
         }
@@ -141,15 +107,58 @@ namespace LinkedList
             return false;
         }
 
-        private Node<T> FindSecondToLast()
+        public void Reverse()
         {
+            Node<T> prev = null;
             Node<T> current = Head;
-            while (current.getChild() != null && current.getChild() != Tail)
+            Node<T> next;
+
+            while (current != null)
             {
+                next = current.getChild();
+                current.setChild(prev);
+                prev = current;
+                current = next;
+            }
+            Head = prev;
+        }
+
+        public void ReverseRecursive()
+        {
+            Head = ReverseRecursiveMethod(Head);
+        }
+
+        private Node<T> ReverseRecursiveMethod(Node<T> startingNode)
+        {
+            if (startingNode == null)
+                return null;
+
+            if (startingNode.getChild() == null)
+                return startingNode;
+
+            Node<T> rest = startingNode.getChild();
+
+            startingNode.setChild(null);
+
+            Node<T> reverseRest = ReverseRecursiveMethod(rest);
+
+            rest.setChild(startingNode);
+
+            return reverseRest;
+        }
+
+        public T[] ToArray()
+        {
+            T[] tArray = new T[Count];
+            Node<T> current = Head;
+
+            for (int i = 0; i < Count; i++)
+            {
+                tArray[i] = current.getData();
                 current = current.getChild();
             }
 
-            return current;
+            return tArray;
         }
     }
 }
